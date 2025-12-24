@@ -1,0 +1,9 @@
+.DS_Store
+*.pdf
+*.docx
+*.vtt
+*.Rhistory
+data/.DS_Store
+data/.Rhistory
+data/geocode_cache.json
+data/shellfish_advisory.geojson

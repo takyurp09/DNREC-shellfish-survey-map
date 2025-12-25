@@ -1,15 +1,39 @@
 zone_id,zone_name,site_name,geocode_name
 Z01,Zone 1 - Delaware Bay,Woodland Beach,Woodland Beach Delaware
+Z01,Zone 1 - Delaware Bay,Bowers Beach,Bowers Beach Delaware
+Z01,Zone 1 - Delaware Bay,South Bowers,South Bowers Delaware
+Z01,Zone 1 - Delaware Bay,Kitts Hummock,Kitts Hummock Delaware
+Z01,Zone 1 - Delaware Bay,Pickering Beach,Pickering Beach Delaware
+
 Z02,Zone 2 - Rehoboth Bay,Dewey Beach area,Dewey Beach Delaware
 Z02,Zone 2 - Rehoboth Bay,Tower Road (near Delaware Seashore State Park),Delaware Seashore State Park
 Z02,Zone 2 - Rehoboth Bay,Indian River Marina (boat access),Indian River Marina Delaware
+
+Z03,Zone 3 - Indian River Bay,Holts Landing State Park,Holts Landing State Park Delaware
 Z03,Zone 3 - Indian River Bay,Bayville / Ocean View shoreline,Ocean View Delaware
 Z03,Zone 3 - Indian River Bay,Near Piney Neck,Piney Neck Delaware
+
 Z04,Zone 4 - Little Assawoman Bay,Fenwick Island State Park (back-bay side),Fenwick Island State Park
+Z04,Zone 4 - Little Assawoman Bay,Assawoman Wildlife Area,Assawoman Wildlife Area Delaware
+
 Z05,Zone 5 - Broadkill River & Roosevelt Inlet,Lewes boat ramp area,Lewes Boat Ramp
 Z05,Zone 5 - Broadkill River & Roosevelt Inlet,Roosevelt Inlet beach flats,Roosevelt Inlet Delaware
-Z06,Zone 6 - Prime Hook & Slaughter Beach,Prime Hook Beach (north & south),Prime Hook National Wildlife Refuge
+
+Z06,Zone 6 - Prime Hook & Slaughter Beach Area,Slaughter Beach,Slaughter Beach Delaware
+Z06,Zone 6 - Prime Hook & Slaughter Beach Area,Prime Hook Beach (north),Prime Hook National Wildlife Refuge
+Z06,Zone 6 - Prime Hook & Slaughter Beach Area,Prime Hook Beach (south),Prime Hook National Wildlife Refuge
+
 Z07,Zone 7 - Masseys Landing Area,At the mouth of Indian River Bay,Masseys Landing Delaware
+Z07,Zone 7 - Masseys Landing Area,Common launch site for clamming trips,Masseys Landing Delaware
 Z07,Zone 7 - Masseys Landing Area,Near the Long Neck area,Long Neck Delaware
-Z08,Zone 8 - Cape Henlopen,Back-bay marsh areas,Cape Henlopen State Park
-Z09,Zone 9 - Cedar Creek & Mispillion,North of Slaughter Beach,Slaughter Beach Delaware
+
+Z08,Zone 8 - Cape Henlopen (Back-bay marsh areas),Back-bay marsh areas,Cape Henlopen State Park
+
+Z09,Zone 9 - Cedar Creek & Mispillion River Bay Flats,North of Slaughter Beach,Slaughter Beach Delaware
+Z09,Zone 9 - Cedar Creek & Mispillion River Bay Flats,Tidal flats exposed at low tide,Cedar Creek Delaware
+Z09,Zone 9 - Cedar Creek & Mispillion River Bay Flats,Traditional hand-raking area,Mispillion River Delaware
+
+Z10,Zone 10 - Other Areas,Big Stone Beach,Big Stone Beach Delaware
+Z10,Zone 10 - Other Areas,Bennetts Pier,Bennetts Pier Delaware
+Z10,Zone 10 - Other Areas,Port Mahon,Port Mahon Delaware
+Z10,Zone 10 - Other Areas,Little Creek area,Little Creek Delaware

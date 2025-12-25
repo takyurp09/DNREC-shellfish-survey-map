@@ -9,12 +9,8 @@
   />
 
   <style>
-    #map {
-      height: 90vh;
-      width: 100%;
-    }
+    #map { height: 90vh; width: 100%; }
 
-    /* Zone list control styling */
     .zone-control {
       background: #fff;
       padding: 10px 12px;
@@ -25,7 +21,7 @@
       line-height: 1.25;
       max-height: 260px;
       overflow: auto;
-      min-width: 210px;
+      min-width: 230px;
     }
     .zone-control .title {
       font-weight: 700;
@@ -36,6 +32,11 @@
       align-items: center;
       gap: 10px;
     }
+    .zone-control .title .left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
     .zone-control .title button {
       border: 1px solid #ddd;
       background: #f7f7f7;
@@ -44,16 +45,10 @@
       cursor: pointer;
       font-size: 12px;
     }
-    .zone-control .title button:hover {
-      background: #eee;
-    }
-    .zone-control ol {
-      margin: 0;
-      padding-left: 18px;
-    }
-    .zone-control li {
-      margin: 2px 0;
-    }
+    .zone-control .title button:hover { background: #eee; }
+    .zone-control ol { margin: 0; padding-left: 18px; }
+    .zone-control li { margin: 2px 0; }
+
     .zone-link {
       cursor: pointer;
       text-decoration: underline;
@@ -63,6 +58,11 @@
     .zone-link.active {
       font-weight: 700;
       color: #0b4f8a;
+    }
+    .zone-count {
+      color: #444;
+      font-weight: 600;
+      margin-left: 6px;
     }
   </style>
 </head>
@@ -88,7 +88,9 @@
       var div = L.DomUtil.create('div', 'zone-control');
       div.innerHTML =
         '<div class="title">' +
-          '<span>Zones</span>' +
+          '<div class="left">' +
+            '<span id="zonesTitle">Zones</span>' +
+          '</div>' +
           '<button id="showAllBtn" type="button">Show all</button>' +
         '</div>' +
         '<ol id="zoneList"></ol>';
@@ -113,12 +115,9 @@
     }
 
     // Styles
-    function polygonDefaultStyle() {
-      return { color: "#1f78b4", weight: 2, fillOpacity: 0.4 };
-    }
-    function polygonHighlightStyle() {
-      return { color: "#ff7f00", weight: 4, fillOpacity: 0.35 };
-    }
+    function polygonDefaultStyle() { return { color: "#1f78b4", weight: 2, fillOpacity: 0.4 }; }
+    function polygonHighlightStyle() { return { color: "#ff7f00", weight: 4, fillOpacity: 0.35 }; }
+
     function pointDefaultStyle() {
       return { radius: 10, fillColor: "#e31a1c", color: "#fff", weight: 2, fillOpacity: 1 };
     }
@@ -131,9 +130,9 @@
       .then(response => response.json())
       .then(data => {
 
-        // Keep references so we can highlight/reset later
         var polygonLayersByZone = new Map(); // zone -> array of polygon layers
         var pointLayersByZone   = new Map(); // zone -> array of point layers
+        var siteCountsByZone    = new Map(); // zone -> #points
         var allBounds = null;
 
         function addToMapList(mapObj, key, layer) {
@@ -141,8 +140,12 @@
           mapObj.get(key).push(layer);
         }
 
-        // Build the GeoJSON layer
-        var geoLayer = L.geoJSON(data, {
+        function incCount(mapObj, key) {
+          mapObj.set(key, (mapObj.get(key) || 0) + 1);
+        }
+
+        // Add GeoJSON to map + store references
+        L.geoJSON(data, {
           style: function (feature) {
             if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
               return polygonDefaultStyle();
@@ -155,7 +158,7 @@
             const p = feature.properties || {};
             const zone = (p.zone_name != null) ? String(p.zone_name) : "Unknown";
 
-            // Track bounds for "Show all"
+            // Update overall bounds
             try {
               if (layer.getBounds) {
                 allBounds = allBounds ? allBounds.extend(layer.getBounds()) : layer.getBounds();
@@ -165,7 +168,6 @@
               }
             } catch (e) {}
 
-            // Store by zone
             if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
               addToMapList(polygonLayersByZone, zone, layer);
               layer.bindPopup(
@@ -177,6 +179,8 @@
 
             if (feature.geometry.type === "Point") {
               addToMapList(pointLayersByZone, zone, layer);
+              incCount(siteCountsByZone, zone);
+
               layer.bindPopup(
                 "<b>" + (p.zone_name ?? "") + "</b><br>" +
                 "Site: " + (p.site_name ?? "")
@@ -185,7 +189,7 @@
           }
         }).addTo(map);
 
-        // Create sorted zone list from both polygons & points
+        // Build zone list from both polygons & points
         var zoneSet = new Set([
           ...polygonLayersByZone.keys(),
           ...pointLayersByZone.keys()
@@ -195,13 +199,23 @@
           return a.localeCompare(b);
         });
 
-        // Render list (clickable)
+        // Update title: Zones (N)
+        var zonesTitleEl = document.getElementById('zonesTitle');
+        if (zonesTitleEl) zonesTitleEl.textContent = "Zones (" + zonesSorted.length + ")";
+
+        // Render list with counts
         var listEl = document.getElementById('zoneList');
         listEl.innerHTML = zonesSorted.map(function (z) {
-          return '<li><span class="zone-link" data-zone="' + z.replace(/"/g, '&quot;') + '">' + z + '</span></li>';
+          var nSites = siteCountsByZone.get(z) || 0;
+          var safeZ = z.replace(/"/g, '&quot;');
+          return (
+            '<li>' +
+              '<span class="zone-link" data-zone="' + safeZ + '">' + z + '</span>' +
+              '<span class="zone-count">(' + nSites + ')</span>' +
+            '</li>'
+          );
         }).join('');
 
-        // Helpers: reset styles
         function resetAllStyles() {
           polygonLayersByZone.forEach(function (layers) {
             layers.forEach(function (lyr) { lyr.setStyle(polygonDefaultStyle()); });
@@ -211,14 +225,12 @@
           });
         }
 
-        // Zoom + highlight a zone
         function focusZone(zoneName) {
           resetAllStyles();
           setActiveZoneInList(zoneName);
 
           var bounds = null;
 
-          // Highlight polygons + get bounds
           var polyLayers = polygonLayersByZone.get(zoneName) || [];
           polyLayers.forEach(function (lyr) {
             lyr.setStyle(polygonHighlightStyle());
@@ -226,7 +238,6 @@
             bounds = bounds ? bounds.extend(b) : b;
           });
 
-          // Highlight points + extend bounds
           var ptLayers = pointLayersByZone.get(zoneName) || [];
           ptLayers.forEach(function (lyr) {
             lyr.setStyle(pointHighlightStyle());
@@ -234,17 +245,14 @@
             bounds = bounds ? bounds.extend(ll) : L.latLngBounds([ll, ll]);
           });
 
-          if (bounds) {
-            map.fitBounds(bounds.pad(0.15));
-          }
+          if (bounds) map.fitBounds(bounds.pad(0.15));
         }
 
-        // Click handling for list
+        // Click handling
         listEl.addEventListener('click', function (e) {
           var target = e.target;
           if (target && target.classList.contains('zone-link')) {
-            var zoneName = target.dataset.zone;
-            focusZone(zoneName);
+            focusZone(target.dataset.zone);
           }
         });
 
@@ -255,10 +263,8 @@
           if (allBounds) map.fitBounds(allBounds.pad(0.10));
         });
 
-        // Initial view: fit everything if bounds exist
-        if (allBounds) {
-          map.fitBounds(allBounds.pad(0.10));
-        }
+        // Initial view
+        if (allBounds) map.fitBounds(allBounds.pad(0.10));
 
       });
   </script>

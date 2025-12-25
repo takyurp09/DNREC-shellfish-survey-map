@@ -20,6 +20,15 @@
       overflow: auto;
       min-width: 210px;
     }
+    /* NEW: how-to hint text */
+    .zone-control .hint {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 8px;
+      line-height: 1.3;
+  }
+
+    
     .zone-control .title {
       font-weight: 700;
       margin-bottom: 6px;
@@ -76,7 +85,11 @@
           '<span>Clamming Zones and Sites</span>' +
           '<button id="showAllBtn" type="button">Show all</button>' +
         '</div>' +
+        '<div class="hint">' +
+          'Click a zone to zoom in. Click a point or polygon for site details.' +
+        '</div>' +
         '<ol id="zoneList"></ol>';
+
 
       L.DomEvent.disableClickPropagation(div);
       L.DomEvent.disableScrollPropagation(div);

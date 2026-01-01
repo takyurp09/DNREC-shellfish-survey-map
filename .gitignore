@@ -7,3 +7,4 @@ data/.DS_Store
 data/.Rhistory
 data/geocode_cache.json
 data/shellfish_advisory.geojson
+data/shelfishing_DE.R
